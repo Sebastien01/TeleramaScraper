@@ -4,7 +4,7 @@ import datetime
 import pandas as pd
 from random import randrange
 
-
+#On construit les blocks de la page web
 header = st.container()
 inputs = st.container()
 now_dataset = st.container()
@@ -16,6 +16,8 @@ with header:
 with inputs:
     date = st.date_input('Demandez le programme pour une date précise !')
 
+#Lorsque l'utilisateur choisit une date en (navigant sur le calendrier), on scrap télérama pour les 30 chaines
+#et on lui renvoie les programmes qu'il peut regarder en ce moment
 with now_dataset:
     df = pd.DataFrame()
     if date != '':
@@ -45,12 +47,13 @@ with now_dataset:
                 st.write(now[['titre','debut','fin']])
             
             else:
-                st.write('Lol')
+                st.write('Vous pouvez découvrir les programmes du moment en choisissant la date du jour')
     
-            
+        #Si l'utilisateur choisit une autre date (je pourrais trouver une meilleure idée ici)
         except:
             st.subheader("Il semble y avoir une erreur... la date est-elle d'actualité ?")
 
+#Si l'utilisateur le désire, il peut choisir une chaine et regarder le programme pour le jour choisi
 with channel_dataset:
     channel_wanted = st.multiselect('De quelle chaine voulez-vous connaître le programme complet ?',
                                     df.chaine.unique())
