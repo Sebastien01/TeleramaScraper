@@ -36,8 +36,7 @@ def build_df(chaine_tv,date_tv):
 def get_channels():
     ###Renvoie une liste d'urls car les urls des chaines ont chacun un numero unique (tf1,192.php ; arte,111.php...)###
     resp = requests.get('https://television.telerama.fr/tele/liste_chaines.php')
-    soup = BeautifulSoup(resp.content,'html.parser')
-    soup = soup.find(class_='tv10-list-chn')
+    soup = BeautifulSoup(resp.content,'html.parser').find(class_='tv10-list-chn')
     
     #On ne regarde que pour 30 chaines principales pour des raisons de calcul
     return [i['href'] for i in soup.find_all(href=True)[:30]] 
