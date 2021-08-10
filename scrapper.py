@@ -1,4 +1,3 @@
-import sys
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -42,3 +41,9 @@ def get_channels():
     
     #On ne regarde que pour 30 chaines principales pour des raisons de calcul
     return [i['href'] for i in soup.find_all(href=True)[:30]] 
+
+def user_vision_dataframe(df):
+    df = df.copy()
+    df.debut = df.debut.dt.strftime('%H:%M') 
+    df.fin   = df.fin.dt.strftime('%H:%M')
+    return df

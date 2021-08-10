@@ -1,4 +1,3 @@
-from requests.api import head
 from scrapper import *
 import streamlit as st
 import datetime
@@ -8,7 +7,8 @@ from random import randrange
 
 header = st.container()
 inputs = st.container()
-dataset = st.container()
+now_dataset = st.container()
+channel_dataset = st.container()
 
 with header:
     st.title('Telerama Scrapper')
@@ -16,7 +16,7 @@ with header:
 with inputs:
     date = st.date_input('Demandez le programme pour une date précise !')
 
-with dataset:
+with now_dataset:
     df = pd.DataFrame()
     if date != '':
         try :
@@ -50,4 +50,12 @@ with dataset:
             
         except:
             st.subheader("Il semble y avoir une erreur... la date est-elle d'actualité ?")
-    
+
+with channel_dataset:
+    channel_wanted = st.multiselect('De quelle chaine voulez-vous connaître le programme complet ?',
+                                    df.chaine.unique())
+    if channel_wanted!='':
+        st.write(f'vous avez selectionné {channel_wanted[0]}')
+        df_user_vision = user_vision_dataframe(df)
+        st.write(df_user_vision[df_user_vision.chaine==channel_wanted[0]][['titre','debut','fin','genre']])
+        
