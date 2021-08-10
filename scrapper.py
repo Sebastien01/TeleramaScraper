@@ -12,9 +12,11 @@ def build_df(chaine_tv,date_tv):
     response = requests.get(url)
     json_file = response.content
         
+    #On regarde la section TELE
     liste_tv = BeautifulSoup(json_file, "html.parser")\
         .find('div',{'id':'LISTETELE'}).find_all(class_='tv10-chaine-item')
-        
+    
+    #On récupère le titre, debut, fin et genre de chaque programme dans la section TELE (pour une chaine donnée)    
     date,chaine,titre,debut,fin,genre=[],[],[],[],[],[]
     for programme in liste_tv:
         titre.append(programme.find('h2').text.strip())
@@ -24,6 +26,7 @@ def build_df(chaine_tv,date_tv):
         chaine.append(re.findall('^(.+?),',chaine_tv.replace('/tele/chaine-tv/',''))[0])
         date.append(date_tv)
     
+    #Création du Dataframe, formatage date/heure et ajout d'une feature "durée"
     df = pd.DataFrame({'titre':titre,'debut':debut,'fin':fin,'genre':genre,'chaine':chaine,'jour':date})
     df.debut = df.apply(lambda x: f'{x.jour} {x.debut}',axis=1) #
     df.fin = df.apply(lambda x: f'{x.jour} {x.fin}',axis=1)
@@ -42,6 +45,7 @@ def get_channels():
     return [i['href'] for i in soup.find_all(href=True)[:30]] 
 
 def user_vision_dataframe(df):
+    ###Retourne une copie du dataframe mais plus lisible pour le lecteur (format date + lisible)###
     df = df.copy()
     df.debut = df.debut.dt.strftime('%H:%M') 
     df.fin   = df.fin.dt.strftime('%H:%M')
